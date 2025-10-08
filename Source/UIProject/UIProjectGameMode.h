@@ -15,7 +15,6 @@ class AUIProjectGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	
 	/** Constructor */
 	AUIProjectGameMode();
 };
