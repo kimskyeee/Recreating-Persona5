@@ -25,6 +25,10 @@ public:
 	bool IsBlockingInput() const { return bBlockGameInput; }
 	UFUNCTION(BlueprintCallable, Category="Policy")
 	void SetBlocking(bool bBlock) { bBlockGameInput = bBlock; }
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class URootWidget> RootWidget;
 	
 private:
 	UPROPERTY(EditAnywhere)

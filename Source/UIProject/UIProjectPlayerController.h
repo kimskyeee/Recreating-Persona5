@@ -24,16 +24,13 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSubclassOf<URootWidget> RootWidgetClass;
-	UPROPERTY(Transient)
-	TObjectPtr<URootWidget> RootWidget;
-	
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> IMC_Game;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> IMC_UI;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> IMC_Combat;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	int32 GamePriority = 0;
@@ -52,4 +49,16 @@ private:
 	void EnsureRootCreated();
 	void BindRootDelegates();
 	void UnbindRootDelegates();
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<URootWidget> RootWidgetClass;
+	UPROPERTY()
+	TObjectPtr<URootWidget> RootWidget;
+	
+	UFUNCTION(BlueprintCallable, Category="CameraShake")
+	void SwitchCameraWithShake(AActor* NewCamera, float BlendTime);
+
+	UPROPERTY(EditDefaultsOnly, Category="CameraShake")
+	TSubclassOf<UCameraShakeBase> ShakeClass;
 };

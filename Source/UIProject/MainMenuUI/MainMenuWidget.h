@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h" 
+#include "BaseWidget.h"
 #include "MainMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UIPROJECT_API UMainMenuWidget : public UCommonActivatableWidget
+class UIPROJECT_API UMainMenuWidget : public UBaseWidget
 {
 	GENERATED_BODY()
 };

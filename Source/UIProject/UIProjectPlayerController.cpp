@@ -15,7 +15,6 @@ AUIProjectPlayerController::AUIProjectPlayerController()
 	{
 		IMC_Game = TempGameIMC.Object;
 	}
-
 	ConstructorHelpers::FObjectFinder<UInputMappingContext> TempUIIMC(TEXT("/Game/Input/IMC_UI.IMC_UI"));
 	if (TempUIIMC.Succeeded())
 	{
@@ -47,9 +46,9 @@ void AUIProjectPlayerController::SetupInputComponent()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->ClearAllMappings();
-		if (IMC_Game)
+		if (IMC_UI)
 		{
-			Subsystem->AddMappingContext(IMC_Game, GamePriority);
+			Subsystem->AddMappingContext(IMC_UI, UIPriority);
 		}
 	}
 }
@@ -68,6 +67,7 @@ void AUIProjectPlayerController::ApplyGameOnly()
 		{
 			Subsys->ClearAllMappings();
 			if (IMC_Game) { Subsys->AddMappingContext(IMC_Game, GamePriority); }
+			SetShowMouseCursor(false);
 		}
 	}
 }
@@ -79,8 +79,16 @@ void AUIProjectPlayerController::ApplyGameAndUI()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
-			if (IMC_UI) { Subsys->AddMappingContext(IMC_UI, UIPriority); }
-			if (IMC_Game) { Subsys->AddMappingContext(IMC_Game, GamePriority); }
+			if (IMC_UI) 
+			{ 
+				Subsys->AddMappingContext(IMC_UI, UIPriority); 
+				SetShowMouseCursor(true);
+			}
+			if (IMC_Game) 
+			{ 
+				Subsys->AddMappingContext(IMC_Game, GamePriority); 
+				SetShowMouseCursor(false);
+			}
 		}
 	}
 }
@@ -115,4 +123,16 @@ void AUIProjectPlayerController::UnbindRootDelegates()
 {
 	if (!RootWidget) return;
 	RootWidget->OnUIStateChanged.RemoveDynamic(this, &AUIProjectPlayerController::HandleAnyBlockingUIActive);
+}
+
+void AUIProjectPlayerController::SwitchCameraWithShake(AActor* NewCamera, float BlendTime)
+{
+	if (!NewCamera) return;
+	SetViewTargetWithBlend(NewCamera, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 0.8f);
+
+	// 쉐이크 효과 추가 (끝날 때)
+	if (ShakeClass)
+	{
+		ClientStartCameraShake(ShakeClass);
+	}
 }

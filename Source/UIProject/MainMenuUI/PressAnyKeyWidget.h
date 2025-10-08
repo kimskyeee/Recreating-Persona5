@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseWidget.h"
-
 #include "PressAnyKeyWidget.generated.h"
 
 /**
@@ -15,5 +14,12 @@ class UIPROJECT_API UPressAnyKeyWidget : public UBaseWidget
 {
 	GENERATED_BODY()
 public:
-	virtual void NativeConstruct() override;
+	UFUNCTION()
+	void GoMainMenu();
+
+protected:
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	
+	void OnAnyInputDetected();
 };

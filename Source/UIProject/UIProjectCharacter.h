@@ -34,20 +34,23 @@ class AUIProjectCharacter : public ACharacter
 protected:
 
 	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
-	UInputAction* JumpAction;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	// UInputAction* JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	UInputAction* MoveAction;
 
 	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
-	UInputAction* LookAction;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	// UInputAction* LookAction;
 
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	UInputAction* MouseLookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UInputAction* SprintAction;
 
 public:
 
@@ -67,7 +70,17 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+private:
+	// 기본 속도
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float WalkSpeed = 550.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float SprintSpeed = 1000.0f;
+
 public:
+	void StartSprinting();
+	void StopSprinting();
 
 	/** Handles move inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
@@ -86,7 +99,6 @@ public:
 	virtual void DoJumpEnd();
 
 public:
-
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
