@@ -25,15 +25,15 @@ AMainMenuPawnChar::AMainMenuPawnChar()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->TargetArmLength = 100.f;
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(0,0,110), FRotator(0.0f, 240.0f, -20.0f));
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(-40,50,55), FRotator(-20.0f, -100.0f, -2.0f));
 	SpringArmComp->bUsePawnControlRotation = false;
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
-	Mesh->SetRelativeLocation(FVector(0,0,-150));
+	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetupAttachment(RootComponent);
+	MeshComp->SetRelativeLocation(FVector(0,0,-150));
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
@@ -56,7 +56,7 @@ void AMainMenuPawnChar::BeginPlay()
 		// SetViewTargetWithBlend(PressCam, 0.1f);
 	}
 
-	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	if (UAnimInstance* Anim = MeshComp ? MeshComp->GetAnimInstance() : nullptr)
 	{
 		float Len = Anim->Montage_Play(LandToStandMontage, 1.f);
 		Anim->Montage_JumpToSection(FName("StartPose"), LandToStandMontage);
@@ -105,7 +105,7 @@ void AMainMenuPawnChar::HandleLanding()
 {
 	if (bLanded) return;
 	
-	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	if (UAnimInstance* Anim = MeshComp ? MeshComp->GetAnimInstance() : nullptr)
 	{
 		Anim->Montage_Resume(LandToStandMontage);
 	}
@@ -116,7 +116,7 @@ void AMainMenuPawnChar::HandleLanding()
 
 void AMainMenuPawnChar::OnEnteredLandLoop()
 {
-	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	if (UAnimInstance* Anim = MeshComp ? MeshComp->GetAnimInstance() : nullptr)
 	{
 		Anim->Montage_Pause(LandToStandMontage); // 앉은 자세에서 멈춤
 		GetWorldTimerManager().SetTimer(SitTimerHandle, this,
@@ -126,7 +126,6 @@ void AMainMenuPawnChar::OnEnteredLandLoop()
 
 void AMainMenuPawnChar::SwitchLanding()
 {
-	// 카메라 전환 + 셰이크
 	if (AUIProjectPlayerController* PC = Cast<AUIProjectPlayerController>(GetController()))
 	{
 		ACameraActor* PressCam = Cast<APressScreenCam>(UGameplayStatics::GetActorOfClass(GetWorld(), APressScreenCam::StaticClass()));
@@ -134,10 +133,9 @@ void AMainMenuPawnChar::SwitchLanding()
 		PC->EnsureRootCreated();
 	}
 
-	UAnimInstance* Anim = Mesh->GetAnimInstance();
+	UAnimInstance* Anim = MeshComp->GetAnimInstance();
 	if (!Anim || !LandToStandMontage) return;
-
-	// Stand로 진행
+	
 	Anim->Montage_Resume(LandToStandMontage);
 	Anim->Montage_JumpToSection(FName("Stand"), LandToStandMontage);
 }

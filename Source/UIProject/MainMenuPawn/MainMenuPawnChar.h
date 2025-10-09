@@ -34,7 +34,7 @@ private:
 	UPROPERTY(visibleAnywhere)
 	class UCameraComponent* CameraComp;
 	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* Mesh;
+	USkeletalMeshComponent* MeshComp;
 	UPROPERTY(EditAnywhere, Category="Anim")
 	UAnimMontage* LandToStandMontage;
 
