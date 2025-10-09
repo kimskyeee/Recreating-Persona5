@@ -27,10 +27,6 @@ void AUIProjectPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	EnsureRootCreated(); // 루트 생성, 바인딩
-	if (RootWidget)
-	{
-		RootWidget->PushByTag(TAG_UI_Screen_PressAnyKey); // 시작 UI
-	}
 }
 
 void AUIProjectPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -55,7 +51,7 @@ void AUIProjectPlayerController::SetupInputComponent()
 
 void AUIProjectPlayerController::HandleAnyBlockingUIActive(bool bAnyBlocking)
 {
-	if (bAnyBlocking) ApplyGameAndUI();
+	if (bAnyBlocking) ApplyUIOnly();
 	else ApplyGameOnly();
 }
 
@@ -81,14 +77,25 @@ void AUIProjectPlayerController::ApplyGameAndUI()
 			Subsys->ClearAllMappings();
 			if (IMC_UI) 
 			{ 
-				Subsys->AddMappingContext(IMC_UI, UIPriority); 
-				SetShowMouseCursor(true);
+				Subsys->AddMappingContext(IMC_UI, UIPriority);
 			}
 			if (IMC_Game) 
 			{ 
 				Subsys->AddMappingContext(IMC_Game, GamePriority); 
-				SetShowMouseCursor(false);
 			}
+		}
+	}
+}
+
+void AUIProjectPlayerController::ApplyUIOnly()
+{
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			Subsys->ClearAllMappings();
+			if (IMC_UI) { Subsys->AddMappingContext(IMC_UI, UIPriority); }
+			SetShowMouseCursor(true);
 		}
 	}
 }

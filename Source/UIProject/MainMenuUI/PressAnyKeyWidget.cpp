@@ -7,29 +7,18 @@
 #include "RootWidget.h"
 #include "UIProjectPlayerController.h"
 #include "Camera/CameraActor.h"
+#include "CommonButtonBase.h"
 #include "GameplayTag/UIGameplayTagInfo.h"
 #include "Kismet/GameplayStatics.h"
 
-
-FReply UPressAnyKeyWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+void UPressAnyKeyWidget::NativeOnInitialized()
 {
-	OnAnyInputDetected();
-	return FReply::Handled();
-}
-
-FReply UPressAnyKeyWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	OnAnyInputDetected();
-	return FReply::Handled();
-}
-
-void UPressAnyKeyWidget::OnAnyInputDetected()
-{
-	GoMainMenu();
+	Super::NativeOnInitialized();
 }
 
 void UPressAnyKeyWidget::GoMainMenu()
 {
+	UE_LOG(LogTemp, Warning, TEXT("GoMainMenu"));
 	UWorld* World = GetWorld();
 	AUIProjectPlayerController* PC = Cast<AUIProjectPlayerController>(World->GetFirstPlayerController());
 	if (!PC) return;

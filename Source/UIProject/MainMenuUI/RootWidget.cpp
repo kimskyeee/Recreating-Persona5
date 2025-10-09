@@ -51,10 +51,12 @@ void URootWidget::NativeDestruct()
 UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)
 {
 	if (!ScreenTag.IsValid()) return nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("URootWidget::PushByTag"));
 
 	// 태그로 클래스 찾기
 	TSubclassOf<UBaseWidget> ScreenClass = ScreenMap.FindRef(ScreenTag);
 	if (!ScreenClass) return nullptr;
+	UE_LOG(LogTemp, Warning, TEXT("ScreenClass is not NULL"));
 
 	UBaseWidget* Base = ScreenClass.GetDefaultObject();
 	FGameplayTag Layer = Base ? Base->GetLayerTag() : TAG_UI_Layer_Overlay;
@@ -90,6 +92,7 @@ void URootWidget::HandleHUDChanged(class UCommonActivatableWidget* NewTop)
 
 UCommonActivatableWidgetStack* URootWidget::ChooseStackByLayer(const FGameplayTag& LayerTag)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ChooseStackByLayer"));
 	if (LayerTag == TAG_UI_Layer_Main) return MainStack;
 	if (LayerTag == TAG_UI_Layer_Overlay) return OverlayStack;
 	if (LayerTag == TAG_UI_Layer_Modal) return ModalStack;

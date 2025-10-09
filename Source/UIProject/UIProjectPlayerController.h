@@ -45,6 +45,7 @@ private:
 
 	void ApplyGameOnly();
 	void ApplyGameAndUI();
+	void ApplyUIOnly();
 
 	void EnsureRootCreated();
 	void BindRootDelegates();
