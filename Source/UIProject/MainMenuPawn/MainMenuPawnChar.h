@@ -33,20 +33,30 @@ private:
 	class USpringArmComponent* SpringArmComp;
 	UPROPERTY(visibleAnywhere)
 	class UCameraComponent* CameraComp;
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, Category="Anim")
+	UAnimMontage* LandToStandMontage;
 
 	UPROPERTY(EditAnywhere, Category="Fall")
 	float Gravity = 980.f;
 	UPROPERTY(EditAnywhere, Category="Fall")
-	float StartZ = 1500.f;
+	float StartZ = 450.f;
 	UPROPERTY(EditAnywhere, Category="Fall")
 	float GroundZ = 250.f; // 레벨 기준
 
 	bool bFalling = true;
 	bool bLanded = false;
 	float VerticalVelocity = 0.f;
-	
+
 	UFUNCTION()
 	void OnCapsuleHit(UPrimitiveComponent* HitComp, AActor* Other, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void HandleLanding();
+	void SwitchLanding();
+
+	UFUNCTION(BlueprintCallable)
+	void OnEnteredLandLoop();
+
+	FTimerHandle SitTimerHandle;
 };

@@ -31,6 +31,10 @@ AMainMenuPawnChar::AMainMenuPawnChar()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetRelativeLocation(FVector(0,0,-150));
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
@@ -50,6 +54,14 @@ void AMainMenuPawnChar::BeginPlay()
 	{
 		PC->bShowMouseCursor = true;
 		// SetViewTargetWithBlend(PressCam, 0.1f);
+	}
+
+	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	{
+		float Len = Anim->Montage_Play(LandToStandMontage, 1.f);
+		Anim->Montage_JumpToSection(FName("StartPose"), LandToStandMontage);
+		Anim->Montage_Pause(LandToStandMontage);
+		Anim->Montage_SetNextSection(FName("StartPose"), FName("LandLoop"), LandToStandMontage);
 	}
 }
 
@@ -92,9 +104,28 @@ void AMainMenuPawnChar::OnCapsuleHit(UPrimitiveComponent* HitComp, AActor* Other
 void AMainMenuPawnChar::HandleLanding()
 {
 	if (bLanded) return;
-	bLanded = true;
+	
+	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	{
+		Anim->Montage_Resume(LandToStandMontage);
+	}
+	
 	bFalling = false;
+	bLanded  = true;
+}
 
+void AMainMenuPawnChar::OnEnteredLandLoop()
+{
+	if (UAnimInstance* Anim = Mesh ? Mesh->GetAnimInstance() : nullptr)
+	{
+		Anim->Montage_Pause(LandToStandMontage); // 앉은 자세에서 멈춤
+		GetWorldTimerManager().SetTimer(SitTimerHandle, this,
+		&AMainMenuPawnChar::SwitchLanding, 1.0f, false);
+	}
+}
+
+void AMainMenuPawnChar::SwitchLanding()
+{
 	// 카메라 전환 + 셰이크
 	if (AUIProjectPlayerController* PC = Cast<AUIProjectPlayerController>(GetController()))
 	{
@@ -102,4 +133,12 @@ void AMainMenuPawnChar::HandleLanding()
 		PC->SwitchCameraWithShake(PressCam, 0.2f);
 		PC->EnsureRootCreated();
 	}
+
+	UAnimInstance* Anim = Mesh->GetAnimInstance();
+	if (!Anim || !LandToStandMontage) return;
+
+	// Stand로 진행
+	Anim->Montage_Resume(LandToStandMontage);
+	Anim->Montage_JumpToSection(FName("Stand"), LandToStandMontage);
 }
+
