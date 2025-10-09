@@ -152,7 +152,7 @@ void AUIProjectPlayerController::UnbindRootDelegates()
 void AUIProjectPlayerController::SwitchCameraWithShake(AActor* NewCamera, float BlendTime)
 {
 	if (!NewCamera) return;
-	// if (GetViewTarget() == NewCamera) return;
+	if (GetViewTarget() == NewCamera) return;
 	
 	SetViewTargetWithBlend(NewCamera, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 1.0f);
 	if (ShakeClass && PlayerCameraManager)
