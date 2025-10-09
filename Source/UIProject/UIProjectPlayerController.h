@@ -62,4 +62,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="CameraShake")
 	TSubclassOf<UCameraShakeBase> ShakeClass;
+
+	UPROPERTY(editanywhere, BlueprintReadWrite)
+	class APressScreenCam* PressCam;
+	UPROPERTY(editanywhere, BlueprintReadWrite)
+	class AMenuNewGameCam* MenuFirstCam;
+	UPROPERTY(editanywhere, BlueprintReadWrite)
+	class AMenuLoadGameCam* MenuSecondCam;
+	UPROPERTY(editanywhere, BlueprintReadWrite)
+	class AMenuQcam* MenuThirdCam;
+	UPROPERTY(editanywhere, BlueprintReadWrite)
+	class AMenuConfigCam* MenuFourthCam;
 };

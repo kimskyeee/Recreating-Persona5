@@ -32,7 +32,6 @@ class AUIProjectCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 	
 protected:
-
 	/** Jump Input Action */
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	// UInputAction* JumpAction;
@@ -63,7 +62,6 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 

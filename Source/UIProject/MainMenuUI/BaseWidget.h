@@ -27,6 +27,8 @@ public:
 	void SetBlocking(bool bBlock) { bBlockGameInput = bBlock; }
 
 protected:
+	virtual void NativeOnActivated() override;
+	
 	UPROPERTY()
 	TObjectPtr<class URootWidget> RootWidget;
 	
@@ -35,7 +37,6 @@ private:
 	FGameplayTag ScreenTag;
 	UPROPERTY(EditAnywhere)
 	FGameplayTag LayerTag;
-
-	UPROPERTY(EditAnywhere)
+	
 	bool bBlockGameInput = true; // true일때 UI IMC
 };

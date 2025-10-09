@@ -17,7 +17,7 @@ void APlatformingPlayerController::SetupInputComponent()
 	{
 		for (UInputMappingContext* CurrentContext : DefaultMappingContexts)
 		{
-			Subsystem->AddMappingContext(CurrentContext, 0);
+			// Subsystem->AddMappingContext(CurrentContext, 0);
 		}
 	}
 }

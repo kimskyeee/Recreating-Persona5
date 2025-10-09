@@ -14,8 +14,6 @@ class UIPROJECT_API UPressAnyKeyWidget : public UBaseWidget
 {
 	GENERATED_BODY()
 public:
-	virtual void NativeOnInitialized() override;
-	
 	UFUNCTION(BlueprintCallable)
 	void GoMainMenu();
 

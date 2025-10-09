@@ -2,19 +2,13 @@
 
 
 #include "PressAnyKeyWidget.h"
-
 #include "MainMenuWidget.h"
 #include "RootWidget.h"
 #include "UIProjectPlayerController.h"
-#include "Camera/CameraActor.h"
 #include "CommonButtonBase.h"
 #include "GameplayTag/UIGameplayTagInfo.h"
 #include "Kismet/GameplayStatics.h"
-
-void UPressAnyKeyWidget::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-}
+#include "UICam/MenuNewGameCam.h"
 
 void UPressAnyKeyWidget::GoMainMenu()
 {
@@ -24,8 +18,8 @@ void UPressAnyKeyWidget::GoMainMenu()
 	if (!PC) return;
 
 	// 카메라 전환
-	AActor* MainMenuCam = UGameplayStatics::GetActorOfClass(World, ACameraActor::StaticClass());
-	PC->SwitchCameraWithShake(MainMenuCam, 1.0f);
+	AMenuNewGameCam* MenuFirstCam = Cast<AMenuNewGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuNewGameCam::StaticClass()));
+	PC->SwitchCameraWithShake(MenuFirstCam, 0.2f);
 
 	// UI 스택에 push
 	PC->RootWidget->PushByTag(TAG_UI_Screen_MainMenu);

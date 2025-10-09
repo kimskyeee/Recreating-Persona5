@@ -6,7 +6,14 @@
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
 #include "GameplayTag/UIGameplayTagInfo.h"
+#include "Kismet/GameplayStatics.h"
 #include "MainMenuUI/RootWidget.h"
+
+#include "MainMenuUI/UICam/MenuConfigCam.h"
+#include "MainMenuUI/UICam/MenuLoadGameCam.h"
+#include "MainMenuUI/UICam/MenuNewGameCam.h"
+#include "MainMenuUI/UICam/MenuQcam.h"
+#include "MainMenuUI/UICam/PressScreenCam.h"
 
 AUIProjectPlayerController::AUIProjectPlayerController()
 {
@@ -25,7 +32,17 @@ AUIProjectPlayerController::AUIProjectPlayerController()
 void AUIProjectPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	PressCam = Cast<APressScreenCam>(UGameplayStatics::GetActorOfClass(GetWorld(), APressScreenCam::StaticClass()));
+	MenuFirstCam = Cast<AMenuNewGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuNewGameCam::StaticClass()));
+	MenuSecondCam = Cast<AMenuLoadGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuLoadGameCam::StaticClass()));
+	MenuThirdCam = Cast<AMenuQcam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuQcam::StaticClass()));
+	MenuFourthCam = Cast<AMenuConfigCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuConfigCam::StaticClass()));
+	
+	SetViewTarget(PressCam);
+	
+	UE_LOG(LogTemp, Warning, TEXT("PC BeginPlay: %s (%s)"),
+		*GetName(), *GetClass()->GetName());
+	
 	EnsureRootCreated(); // 루트 생성, 바인딩
 }
 
@@ -42,6 +59,7 @@ void AUIProjectPlayerController::SetupInputComponent()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->ClearAllMappings();
+		if (!IMC_UI) { UE_LOG(LogTemp, Error, TEXT("IMC_UI is NULL")); }
 		if (IMC_UI)
 		{
 			Subsystem->AddMappingContext(IMC_UI, UIPriority);
@@ -62,7 +80,6 @@ void AUIProjectPlayerController::ApplyGameOnly()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
-			if (IMC_Game) { Subsys->AddMappingContext(IMC_Game, GamePriority); }
 			SetShowMouseCursor(false);
 		}
 	}
@@ -94,7 +111,7 @@ void AUIProjectPlayerController::ApplyUIOnly()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
-			if (IMC_UI) { Subsys->AddMappingContext(IMC_UI, UIPriority); }
+			if (IMC_UI) { Subsys->AddMappingContext(IMC_UI, UIPriority); UE_LOG(LogTemp, Warning, TEXT("IMC_UI is not NULL")); }
 			SetShowMouseCursor(true);
 		}
 	}
@@ -135,11 +152,19 @@ void AUIProjectPlayerController::UnbindRootDelegates()
 void AUIProjectPlayerController::SwitchCameraWithShake(AActor* NewCamera, float BlendTime)
 {
 	if (!NewCamera) return;
-	SetViewTargetWithBlend(NewCamera, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 0.8f);
-
-	// 쉐이크 효과 추가 (끝날 때)
-	if (ShakeClass)
+	// if (GetViewTarget() == NewCamera) return;
+	
+	SetViewTargetWithBlend(NewCamera, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 1.0f);
+	if (ShakeClass && PlayerCameraManager)
 	{
-		ClientStartCameraShake(ShakeClass);
+		FTimerHandle Handle;
+		GetWorldTimerManager().SetTimer(Handle, [this]()
+			{
+				if (PlayerCameraManager && ShakeClass)
+				{
+					PlayerCameraManager->StartCameraShake(ShakeClass);
+				}
+			},
+			FMath::Max(0.f, BlendTime), false);
 	}
 }
