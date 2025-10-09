@@ -47,11 +47,12 @@ private:
 	void ApplyGameAndUI();
 	void ApplyUIOnly();
 
-	void EnsureRootCreated();
 	void BindRootDelegates();
 	void UnbindRootDelegates();
 
 public:
+	void EnsureRootCreated();
+	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<URootWidget> RootWidgetClass;
 	UPROPERTY()

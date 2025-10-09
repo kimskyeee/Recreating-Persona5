@@ -38,11 +38,6 @@ void AUIProjectPlayerController::BeginPlay()
 	MenuThirdCam = Cast<AMenuQcam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuQcam::StaticClass()));
 	MenuFourthCam = Cast<AMenuConfigCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuConfigCam::StaticClass()));
 	
-	SetViewTarget(PressCam);
-	
-	UE_LOG(LogTemp, Warning, TEXT("PC BeginPlay: %s (%s)"),
-		*GetName(), *GetClass()->GetName());
-	
 	EnsureRootCreated(); // 루트 생성, 바인딩
 }
 
