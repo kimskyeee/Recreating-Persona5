@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayTag/UIGameplayTagInfo.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainMenuUI/UICam/PressScreenCam.h"
 
@@ -130,7 +131,7 @@ void AMainMenuPawnChar::SwitchLanding()
 	{
 		ACameraActor* PressCam = Cast<APressScreenCam>(UGameplayStatics::GetActorOfClass(GetWorld(), APressScreenCam::StaticClass()));
 		PC->SwitchCameraWithShake(PressCam, 0.2f);
-		PC->EnsureRootCreated();
+		PC->EnsureRootCreated(TAG_UI_Screen_PressAnyKey);
 	}
 
 	UAnimInstance* Anim = MeshComp->GetAnimInstance();

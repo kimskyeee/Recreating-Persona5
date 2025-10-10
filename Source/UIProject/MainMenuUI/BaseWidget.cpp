@@ -11,5 +11,6 @@
 void UBaseWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
-	bIsFocusable = true;
+	SetIsFocusable(true);
+	SetFocus();
 }

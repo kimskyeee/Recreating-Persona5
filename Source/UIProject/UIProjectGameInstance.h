@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainMenuUI/BaseWidget.h"
-#include "MapWidget.generated.h"
+#include "Engine/GameInstance.h"
+#include "UIProjectGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UIPROJECT_API UMapWidget : public UBaseWidget
+class UIPROJECT_API UUIProjectGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 };

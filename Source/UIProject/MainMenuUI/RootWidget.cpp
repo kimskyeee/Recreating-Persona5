@@ -22,10 +22,15 @@ void URootWidget::NativeOnInitialized()
 	{
 		ModalChangedHandle = ModalStack->OnDisplayedWidgetChanged().AddUObject(this, &URootWidget::HandleModalChanged);
 	}
+	if (HUDStack)
+	{
+		HUDChangeHandle = HUDStack->OnDisplayedWidgetChanged().AddUObject(this, &URootWidget::HandleHUDChanged);
+	}
 	
 	HandleMainChanged(nullptr);
 	HandleOverlayChanged(nullptr);
 	HandleModalChanged(nullptr);
+	HandleHUDChanged(nullptr);
 }
 
 void URootWidget::NativeDestruct()
@@ -44,6 +49,11 @@ void URootWidget::NativeDestruct()
 	{
 		ModalStack->OnDisplayedWidgetChanged().Remove(ModalChangedHandle);
 		ModalChangedHandle.Reset();
+	}
+	if (HUDStack && HUDChangeHandle.IsValid())
+	{
+		HUDStack->OnDisplayedWidgetChanged().Remove(HUDChangeHandle);
+		HUDChangeHandle.Reset();
 	}
 	Super::NativeDestruct();
 }

@@ -31,6 +31,7 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class URootWidget> RootWidget;
+	bool bBlockGameInput = true; // true일때 UI IMC
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -38,5 +39,4 @@ private:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag LayerTag;
 	
-	bool bBlockGameInput = true; // true일때 UI IMC
 };

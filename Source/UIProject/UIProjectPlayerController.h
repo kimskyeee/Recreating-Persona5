@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "UIProjectPlayerController.generated.h"
 
+struct FGameplayTag;
 class URootWidget;
 class UInputMappingContext;
 
@@ -23,7 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
+	virtual void CameraSet();
+
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> IMC_Game;
@@ -51,7 +53,7 @@ private:
 	void UnbindRootDelegates();
 
 public:
-	void EnsureRootCreated();
+	void EnsureRootCreated(const FGameplayTag& InitialTag);
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<URootWidget> RootWidgetClass;

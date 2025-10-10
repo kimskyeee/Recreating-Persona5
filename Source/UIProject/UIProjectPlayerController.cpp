@@ -32,19 +32,23 @@ AUIProjectPlayerController::AUIProjectPlayerController()
 void AUIProjectPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	PressCam = Cast<APressScreenCam>(UGameplayStatics::GetActorOfClass(GetWorld(), APressScreenCam::StaticClass()));
-	MenuFirstCam = Cast<AMenuNewGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuNewGameCam::StaticClass()));
-	MenuSecondCam = Cast<AMenuLoadGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuLoadGameCam::StaticClass()));
-	MenuThirdCam = Cast<AMenuQcam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuQcam::StaticClass()));
-	MenuFourthCam = Cast<AMenuConfigCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuConfigCam::StaticClass()));
-	
-	EnsureRootCreated(); // 루트 생성, 바인딩
+	CameraSet();
+	// EnsureRootCreated(); // 루트 생성, 바인딩 -> 착지 시 해줌 비긴플레이 X
 }
 
 void AUIProjectPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UnbindRootDelegates();
 	Super::EndPlay(EndPlayReason);
+}
+
+void AUIProjectPlayerController::CameraSet()
+{
+	PressCam = Cast<APressScreenCam>(UGameplayStatics::GetActorOfClass(GetWorld(), APressScreenCam::StaticClass()));
+	MenuFirstCam = Cast<AMenuNewGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuNewGameCam::StaticClass()));
+	MenuSecondCam = Cast<AMenuLoadGameCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuLoadGameCam::StaticClass()));
+	MenuThirdCam = Cast<AMenuQcam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuQcam::StaticClass()));
+	MenuFourthCam = Cast<AMenuConfigCam>(UGameplayStatics::GetActorOfClass(GetWorld(), AMenuConfigCam::StaticClass()));
 }
 
 void AUIProjectPlayerController::SetupInputComponent()
@@ -75,7 +79,15 @@ void AUIProjectPlayerController::ApplyGameOnly()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
+			if (IMC_Game) 
+			{ 
+				Subsys->AddMappingContext(IMC_Game, GamePriority); 
+			}
+			FInputModeGameOnly Mode;
+			SetInputMode(Mode);
 			SetShowMouseCursor(false);
+			bEnableClickEvents = false;
+			bEnableMouseOverEvents = false;
 		}
 	}
 }
@@ -106,13 +118,22 @@ void AUIProjectPlayerController::ApplyUIOnly()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
-			if (IMC_UI) { Subsys->AddMappingContext(IMC_UI, UIPriority); UE_LOG(LogTemp, Warning, TEXT("IMC_UI is not NULL")); }
+			if (IMC_UI)
+			{
+				Subsys->AddMappingContext(IMC_UI, UIPriority);
+				UE_LOG(LogTemp, Warning, TEXT("IMC_UI is not NULL"));
+			}
+			FInputModeUIOnly Mode;
+			Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			SetInputMode(Mode);
 			SetShowMouseCursor(true);
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
 		}
 	}
 }
 
-void AUIProjectPlayerController::EnsureRootCreated()
+void AUIProjectPlayerController::EnsureRootCreated(const FGameplayTag& InitialTag)
 {
 	if (!RootWidget)
 	{
@@ -122,7 +143,7 @@ void AUIProjectPlayerController::EnsureRootCreated()
 			RootWidget->AddToViewport(0); // 한번만
 			BindRootDelegates();
 
-			RootWidget->PushByTag(TAG_UI_Screen_PressAnyKey);
+			RootWidget->PushByTag(InitialTag);
 		}
 	}
 	else if (RootWidget && !RootWidget->IsInViewport())
