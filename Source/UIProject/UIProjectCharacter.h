@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "UIProjectCharacter.generated.h"
 
+class UMapOnlyWidget;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -50,9 +51,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	UInputAction* SprintAction;
-
+	
 public:
-
 	/** Constructor */
 	AUIProjectCharacter();	
 

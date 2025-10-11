@@ -2,6 +2,8 @@
 
 
 #include "UIProjectPlayerController.h"
+
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
@@ -62,6 +64,10 @@ void AUIProjectPlayerController::SetupInputComponent()
 		if (IMC_UI)
 		{
 			Subsystem->AddMappingContext(IMC_UI, UIPriority);
+			if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
+			{
+				EIC->BindAction(MapAction, ETriggerEvent::Started, this, &AUIProjectPlayerController::OnToggleMenu);
+			}
 		}
 	}
 }
@@ -78,7 +84,7 @@ void AUIProjectPlayerController::ApplyGameOnly()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			Subsys->ClearAllMappings();
+			// Subsys->ClearAllMappings();
 			if (IMC_Game) 
 			{ 
 				Subsys->AddMappingContext(IMC_Game, GamePriority); 
@@ -92,7 +98,7 @@ void AUIProjectPlayerController::ApplyGameOnly()
 	}
 }
 
-void AUIProjectPlayerController::ApplyGameAndUI()
+/*void AUIProjectPlayerController::ApplyGameAndUI()
 {
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
@@ -109,7 +115,7 @@ void AUIProjectPlayerController::ApplyGameAndUI()
 			}
 		}
 	}
-}
+}*/
 
 void AUIProjectPlayerController::ApplyUIOnly()
 {
@@ -117,7 +123,7 @@ void AUIProjectPlayerController::ApplyUIOnly()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			Subsys->ClearAllMappings();
+			// Subsys->ClearAllMappings();
 			if (IMC_UI)
 			{
 				Subsys->AddMappingContext(IMC_UI, UIPriority);
@@ -163,6 +169,14 @@ void AUIProjectPlayerController::UnbindRootDelegates()
 {
 	if (!RootWidget) return;
 	RootWidget->OnUIStateChanged.RemoveDynamic(this, &AUIProjectPlayerController::HandleAnyBlockingUIActive);
+}
+
+void AUIProjectPlayerController::OnToggleMenu()
+{
+	if (RootWidget)
+	{
+		RootWidget->PushByTag(TAG_UI_Screen_InGameMenu);
+	}
 }
 
 void AUIProjectPlayerController::SwitchCameraWithShake(AActor* NewCamera, float BlendTime)

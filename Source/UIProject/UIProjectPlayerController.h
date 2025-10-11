@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "UIProjectPlayerController.generated.h"
 
+class UInputAction;
 struct FGameplayTag;
 class URootWidget;
 class UInputMappingContext;
@@ -39,19 +40,26 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	int32 UIPriority = 10;
 	
-	/** Input mapping context setup */
 	virtual void SetupInputComponent() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UInputAction* MapAction;
+	
 	UFUNCTION()
 	void HandleAnyBlockingUIActive(bool bAnyBlocking);
-
-	void ApplyGameOnly();
-	void ApplyGameAndUI();
-	void ApplyUIOnly();
 
 	void BindRootDelegates();
 	void UnbindRootDelegates();
 
+	void OnToggleMenu();
+
+public:
+	void ApplyGameOnly();
+	// void ApplyGameAndUI();
+	void ApplyUIOnly();
+
+	void OnCloseMenu();
+	
 public:
 	void EnsureRootCreated(const FGameplayTag& InitialTag);
 	
