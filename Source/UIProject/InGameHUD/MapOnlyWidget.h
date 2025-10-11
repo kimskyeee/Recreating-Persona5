@@ -6,6 +6,7 @@
 #include "MainMenuUI/BaseWidget.h"
 #include "MapOnlyWidget.generated.h"
 
+struct FPaintRect { float Left=0, Top=0, Width=0, Height=0; };
 /**
  * 
  */
@@ -23,6 +24,11 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	class UCommonTextBlock* MapText;
+
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	class UWidgetAnimation* MapAnim;
+
+	void PlayZoomIn(bool bForward);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class APlayableBound> PlayableBound;
@@ -53,5 +59,7 @@ private:
 	// 지도 이미지 크기
 	FVector2D MapSize = FVector2D(1300.f, 1300.f);
 
+	FPaintRect GetBaseRect();
+	static FPaintRect ApplyUVCrop(const FPaintRect& R, const FVector2D& InUVMin, const FVector2D& InUVMax);
 	void WorldToMapUV();
 };

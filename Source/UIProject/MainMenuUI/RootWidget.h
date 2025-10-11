@@ -10,6 +10,7 @@
 class UBaseWidget;
 class UCommonActivatableWidget;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHudMenuAnim, bool);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUIStateChanged, bool, bAnyBlockingActive);
 
 UCLASS()
@@ -18,6 +19,7 @@ class UIPROJECT_API URootWidget : public UCommonUserWidget
 	GENERATED_BODY()
 
 public:
+	FOnHudMenuAnim OnHudMenuAnim;
 	FOnUIStateChanged OnUIStateChanged;
 
 	// 태그로 푸시
@@ -47,6 +49,8 @@ private:
 	FDelegateHandle ModalChangedHandle;
 	FDelegateHandle HUDChangeHandle;
 
+	bool bMenuVisiblePrev = false; // 이전 메뉴 가시성
+
 	bool bMainBlocking = false;
 	bool bOverlayBlocking = false;
 	bool bModalBlocking = false;
@@ -60,4 +64,14 @@ private:
 	UCommonActivatableWidgetStack* ChooseStackByLayer(const FGameplayTag& LayerTag);
 	bool IsBlockingWidget(const UCommonActivatableWidget* Widget, bool bDefaultBlocking);
 	void RecalcAndBroadcast();
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UCommonActivatableWidget> MainTop;
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UCommonActivatableWidget> OverlayTop;
+	UPROPERTY(Transient)
+	TWeakObjectPtr<UCommonActivatableWidget> ModalTop;
+
+	bool IsMenuScreen(const UCommonActivatableWidget* Widget) const;
+	void UpdateMenuVisibilityAndBroadcast();
 };

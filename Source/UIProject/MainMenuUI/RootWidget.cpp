@@ -78,20 +78,26 @@ UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)
 
 void URootWidget::HandleMainChanged(class UCommonActivatableWidget* NewTop)
 {
+	MainTop = NewTop;
 	bMainBlocking = IsBlockingWidget(NewTop, false);
 	RecalcAndBroadcast();
+	UpdateMenuVisibilityAndBroadcast();
 }
 
 void URootWidget::HandleOverlayChanged(class UCommonActivatableWidget* NewTop)
 {
+	OverlayTop = NewTop;
 	bOverlayBlocking = IsBlockingWidget(NewTop, true);
 	RecalcAndBroadcast();
+	UpdateMenuVisibilityAndBroadcast();
 }
 
 void URootWidget::HandleModalChanged(class UCommonActivatableWidget* NewTop)
 {
+	ModalTop = NewTop;
 	bModalBlocking = IsBlockingWidget(NewTop, true);
 	RecalcAndBroadcast();
+	UpdateMenuVisibilityAndBroadcast();
 }
 
 void URootWidget::HandleHUDChanged(class UCommonActivatableWidget* NewTop)
@@ -122,4 +128,30 @@ void URootWidget::RecalcAndBroadcast()
 {
 	const bool bAnyBlocking = (bModalBlocking || bOverlayBlocking || bMainBlocking);
 	OnUIStateChanged.Broadcast(bAnyBlocking);
+}
+
+bool URootWidget::IsMenuScreen(const UCommonActivatableWidget* Widget) const
+{
+	if (!Widget) return false;
+	if (const UBaseWidget* Screen = Cast<UBaseWidget>(Widget))
+	{
+		return Screen->GetScreenTag() == TAG_UI_Screen_InGameMenu;
+	}
+	return false;
+}
+
+void URootWidget::UpdateMenuVisibilityAndBroadcast()
+{
+	const bool bNowVisible =
+		IsMenuScreen(MainTop.Get()) ||
+		IsMenuScreen(OverlayTop.Get()) ||
+		IsMenuScreen(ModalTop.Get());
+
+	if (bNowVisible != bMenuVisiblePrev)
+	{
+		// true면 HUD PlayAnim(true)
+		// false면 HUD PlayAnim(false)
+		OnHudMenuAnim.Broadcast(bNowVisible);
+		bMenuVisiblePrev = bNowVisible;
+	}
 }

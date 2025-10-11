@@ -8,9 +8,11 @@
 #include "InGameCore/PlayableBound.h"
 #include "CommonTextBlock.h"
 #include "UIProjectPlayerController.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
 
+class UCanvasPanelSlot;
 class UEnhancedInputLocalPlayerSubsystem;
 
 void UMapOnlyWidget::NativeOnInitialized()
@@ -45,22 +47,44 @@ void UMapOnlyWidget::NativeOnActivated()
 	Super::NativeOnActivated();
 	
 	WorldToMapUV();
+	Zoom = 1.0f;
+	MapImage->SetRenderScale(FVector2D(1.0f, 1.0f));
 	MapText->SetText(FText::FromString(TEXT("확대")));
 }
 
-/*TOptional<FUIInputConfig> UMapOnlyWidget::GetDesiredInputConfig() const
+void UMapOnlyWidget::PlayZoomIn(bool bForward)
 {
-	FUIInputConfig Config(
-		ECommonInputMode::Menu, 
-		EMouseCaptureMode::CapturePermanently,
-		EMouseLockMode::LockAlways
-	);
+	if (bForward)
+	{
+		PlayAnimation(MapAnim);
+	}
+	else
+	{
+		PlayAnimationReverse(MapAnim);
+	}
+}
 
-	Config.bIgnoreLookInput = true;
-	Config.bIgnoreMoveInput = true;
+FPaintRect UMapOnlyWidget::GetBaseRect()
+{
+	FPaintRect Rect;
+	if (!MapImage) return Rect;
+	
+	const FVector2D Alloc = MapImage->GetCachedGeometry().GetLocalSize();
+	Rect.Width = Alloc.X; Rect.Height = Alloc.Y;
+	Rect.Left = 0.f; Rect.Top = 0.f;
+	return Rect;
+}
 
-	return Config;
-}*/
+FPaintRect UMapOnlyWidget::ApplyUVCrop(const FPaintRect& R, const FVector2D& InUVMin, const FVector2D& InUVMax)
+{
+	FPaintRect Out;
+	const FVector2D UVSize = InUVMax - InUVMin;
+	Out.Left = R.Left + R.Width  * InUVMin.X;
+	Out.Top = R.Top  + R.Height * InUVMin.Y;
+	Out.Width = R.Width  * UVSize.X;
+	Out.Height = R.Height * UVSize.Y;
+	return Out;
+}
 
 void UMapOnlyWidget::WorldToMapUV()
 {
@@ -74,19 +98,25 @@ void UMapOnlyWidget::WorldToMapUV()
 	Ny = FMath::Clamp(Ny, 0.f, 1.f);
 
 	const float NyFlip = 1.f - Ny; // Y뒤집기
-	
-	// UV 사각형
-	const float U = FMath::Lerp(UVMin.X, UVMax.X, Nx);
-	const float V = FMath::Lerp(UVMin.Y, UVMax.Y, NyFlip);
+
+	const FPaintRect R = GetBaseRect();
+	const FPaintRect RCrop = ApplyUVCrop(R, UVMin, UVMax);
 
 	// 위젯 픽셀 좌표
-	const float Xpix = U * MapSize.X;
-	const float Ypix = V * MapSize.Y;
-
+	const float Xpix = RCrop.Left + Nx * RCrop.Width;
+	const float Ypix = RCrop.Top  + Ny * RCrop.Height;
+	
 	const float Yaw = Pawn->GetActorRotation().Yaw;
-	PlayerImage->SetRenderTransformPivot(FVector2D(0.5f, 0.5f));
-	// PlayerImage->SetRenderTransformAngle(Yaw);
+	// PlayerImage->SetRenderTransformPivot(FVector2D(0.5f, 0.5f));
+	PlayerImage->SetRenderTransformAngle(Yaw);
 	PlayerImage->SetRenderTranslation(FVector2D(Xpix, Ypix));
+
+	/*if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
+	{
+		CanvasSlot->SetAnchors(FAnchors(0,0,0,0));
+		CanvasSlot->SetAlignment(FVector2D(0.5f, 0.5f));
+		CanvasSlot->SetPosition(FVector2D(Xpix, Ypix));
+	}*/
 }
 
 void UMapOnlyWidget::OnCloseMenu()
@@ -103,17 +133,17 @@ void UMapOnlyWidget::OnCloseMenu()
 void UMapOnlyWidget::OnZoomMap()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnZoomMap"));
-	Zoom = (Zoom < 1.5f) ? 1.8f : 1.0f;
-	if (MapText)
+
+	if (Zoom < 1.5f)
 	{
-		if (Zoom > 1.5f)
-		{
-			MapText->SetText(FText::FromString(TEXT("축소")));
-		}
-		else
-		{
-			MapText->SetText(FText::FromString(TEXT("확대")));
-		}
+		Zoom = 1.8f;
+		PlayZoomIn(true);
+		MapText->SetText(FText::FromString(TEXT("축소")));
 	}
-	MapImage->SetRenderScale(FVector2D(Zoom, Zoom));
+	else
+	{
+		Zoom = 1.0f;
+		PlayZoomIn(false);
+		MapText->SetText(FText::FromString(TEXT("확대")));
+	}
 }
