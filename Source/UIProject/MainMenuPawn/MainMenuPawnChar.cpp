@@ -121,7 +121,7 @@ void AMainMenuPawnChar::OnEnteredLandLoop()
 	{
 		Anim->Montage_Pause(LandToStandMontage); // 앉은 자세에서 멈춤
 		GetWorldTimerManager().SetTimer(SitTimerHandle, this,
-		&AMainMenuPawnChar::SwitchLanding, 1.0f, false);
+		&AMainMenuPawnChar::SwitchLanding, 0.5f, false);
 	}
 }
 
