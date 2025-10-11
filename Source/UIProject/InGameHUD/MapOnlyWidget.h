@@ -46,7 +46,7 @@ private:
 	FVector2D MapMin = FVector2D::ZeroVector;
 	FVector2D MapMax = FVector2D::ZeroVector;
 
-	// 지도 텍스처
+	// 지도 텍스처에서 지도가 있는 부분 (사용할 부분)
 	FVector2D UVMin = FVector2D(0.3f, 0.4f);
 	FVector2D UVMax = FVector2D(0.68f, 0.6f);
 

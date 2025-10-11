@@ -84,7 +84,7 @@ void AUIProjectPlayerController::ApplyGameOnly()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			// Subsys->ClearAllMappings();
+			Subsys->ClearAllMappings();
 			if (IMC_Game) 
 			{ 
 				Subsys->AddMappingContext(IMC_Game, GamePriority); 
