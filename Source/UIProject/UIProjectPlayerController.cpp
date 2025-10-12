@@ -177,7 +177,7 @@ void AUIProjectPlayerController::OnToggleMenu()
 {
 	if (RootWidget)
 	{
-		RootWidget->PushByTag(TAG_UI_Screen_InGameMenu);
+		RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Map);
 	}
 }
 

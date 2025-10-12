@@ -3,7 +3,9 @@
 
 #include "MainMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "RootWidget.h"
 #include "UIProjectPlayerController.h"
+#include "GameplayTag/UIGameplayTagInfo.h"
 #include "UICam/MenuConfigCam.h"
 #include "UICam/MenuLoadGameCam.h"
 #include "UICam/MenuNewGameCam.h"
@@ -106,6 +108,9 @@ void UMainMenuWidget::OnHoveredFourthButton()
 void UMainMenuWidget::OnClickedFirstButton()
 {
 	RequestCam(EMenuCam::First);
+	
+	if (!PC) return;
+	PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Transition);
 }
 
 void UMainMenuWidget::OnClickedSecondButton()

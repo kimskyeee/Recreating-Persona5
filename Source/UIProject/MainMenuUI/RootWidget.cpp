@@ -133,11 +133,12 @@ void URootWidget::RecalcAndBroadcast()
 bool URootWidget::IsMenuScreen(const UCommonActivatableWidget* Widget) const
 {
 	if (!Widget) return false;
-	if (const UBaseWidget* Screen = Cast<UBaseWidget>(Widget))
-	{
-		return Screen->GetScreenTag() == TAG_UI_Screen_InGameMenu;
-	}
-	return false;
+	const UBaseWidget* Screen = Cast<UBaseWidget>(Widget);
+	if (!Screen) return false;
+
+	const FGameplayTag& Tag = Screen->GetScreenTag();
+	// 부모-자식 계층 고려
+	return Tag.IsValid() && Tag.MatchesTag(TAG_UI_Screen_InGameMenu);
 }
 
 void URootWidget::UpdateMenuVisibilityAndBroadcast()
