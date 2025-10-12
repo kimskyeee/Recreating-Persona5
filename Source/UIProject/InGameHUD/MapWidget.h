@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class UIPROJECT_API UMapWidget : public UCommonUserWidget
 {
@@ -20,7 +21,7 @@ private:
 	
 	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
+	
 protected:
 	void UpdateFromWorldLocation(const FVector& WorldLoc);
 	void UpdateMarkerRotation(APawn* MarkerPawn);
@@ -36,6 +37,8 @@ public:
 	class UImage* MapImage;
 	UPROPERTY(meta = (BindWidget))
 	class UImage* PlayerImage;
+	UPROPERTY(meta = (BindWidget))
+	class UImage* FootImage;
 
 	UPROPERTY()
 	class UMaterialInstanceDynamic* MI_Map = nullptr;
@@ -43,7 +46,21 @@ public:
 	float Zoom = 0.2f;
 	UPROPERTY(editanywhere)
 	UTexture2D* MapTexture = nullptr;
+
+	UPROPERTY()
+	class UMaterialInstanceDynamic* MI_Foot = nullptr;
+	UPROPERTY(editanywhere)
+	UTexture2D* FootTexture = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class APlayableBound> PlayableBound;
+
+private:
+	float UOffset = 0;
+	float VOffset = 0;
+	bool bStart = false;
+
+	float StartU = 0.0f;
+	float StartV = 0.0f;
+	float Center = 0.5f;
 };
