@@ -4,6 +4,7 @@
 
 #include "BaseWidget.h"
 #include "GameplayTag/UIGameplayTagInfo.h"
+#include "Transition/TransitionUI.h"
 #include "Widgets/CommonActivatableWidgetContainer.h" 
 
 void URootWidget::NativeOnInitialized()
@@ -155,4 +156,17 @@ void URootWidget::UpdateMenuVisibilityAndBroadcast()
 		OnHudMenuAnim.Broadcast(bNowVisible);
 		bMenuVisiblePrev = bNowVisible;
 	}
+}
+
+class UTransitionUI* URootWidget::PushTransitionByTag(FGameplayTag Tag, const FName TargetMap)
+{
+	if (UCommonActivatableWidget* Added = PushByTag(Tag))
+	{
+		if (UTransitionUI* Transition = Cast<UTransitionUI>(Added))
+		{
+			Transition->TargetMapName = TargetMap;
+			return Transition;
+		}
+	}
+	return nullptr;
 }

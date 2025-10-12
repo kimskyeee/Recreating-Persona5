@@ -110,7 +110,11 @@ void UMainMenuWidget::OnClickedFirstButton()
 	RequestCam(EMenuCam::First);
 	
 	if (!PC) return;
-	PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Transition);
+
+	// 무조건 게임 맵으로 이동하기때문에 따로 맵이름 설정하지 않음
+	// PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Transition);
+	PC->RootWidget->PushTransitionByTag(TAG_UI_Screen_InGameMenu_Transition, TEXT("Downtown_Alley"));
+
 }
 
 void UMainMenuWidget::OnClickedSecondButton()

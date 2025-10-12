@@ -74,4 +74,8 @@ private:
 
 	bool IsMenuScreen(const UCommonActivatableWidget* Widget) const;
 	void UpdateMenuVisibilityAndBroadcast();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	class UTransitionUI* PushTransitionByTag(FGameplayTag Tag, const FName TargetMap);
 };
