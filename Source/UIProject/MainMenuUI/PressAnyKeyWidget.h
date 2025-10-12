@@ -13,6 +13,10 @@ UCLASS()
 class UIPROJECT_API UPressAnyKeyWidget : public UBaseWidget
 {
 	GENERATED_BODY()
+private:
+	virtual void NativeOnActivated() override;
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void GoMainMenu();

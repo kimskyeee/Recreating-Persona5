@@ -74,6 +74,7 @@ void AUIProjectPlayerController::SetupInputComponent()
 
 void AUIProjectPlayerController::HandleAnyBlockingUIActive(bool bAnyBlocking)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleAnyBlockingUIActive"));
 	if (bAnyBlocking) ApplyUIOnly();
 	else ApplyGameOnly();
 }
@@ -119,6 +120,7 @@ void AUIProjectPlayerController::ApplyGameOnly()
 
 void AUIProjectPlayerController::ApplyUIOnly()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ApplyUIOnly"));
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())

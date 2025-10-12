@@ -9,6 +9,27 @@
 #include "GameplayTag/UIGameplayTagInfo.h"
 #include "Kismet/GameplayStatics.h"
 #include "UICam/MenuNewGameCam.h"
+#include "Input/CommonUIInputTypes.h"
+
+void UPressAnyKeyWidget::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+	UE_LOG(LogTemp, Warning, TEXT("PressAnyKeyWidget NativeOnActivated"));
+}
+
+FReply UPressAnyKeyWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+	const FKey PressedKey = InKeyEvent.GetKey();
+
+	if (PressedKey.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pressed: %s"), *PressedKey.GetDisplayName().ToString());
+		GoMainMenu();
+		return FReply::Handled(); // 입력을 소비
+	}
+	
+	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+}
 
 void UPressAnyKeyWidget::GoMainMenu()
 {

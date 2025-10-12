@@ -12,9 +12,6 @@
 #include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
 
-class UCanvasPanelSlot;
-class UEnhancedInputLocalPlayerSubsystem;
-
 void UMapOnlyWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -108,15 +105,15 @@ void UMapOnlyWidget::WorldToMapUV()
 	
 	const float Yaw = Pawn->GetActorRotation().Yaw;
 	// PlayerImage->SetRenderTransformPivot(FVector2D(0.5f, 0.5f));
-	PlayerImage->SetRenderTransformAngle(Yaw);
-	PlayerImage->SetRenderTranslation(FVector2D(Xpix, Ypix));
+	// PlayerImage->SetRenderTransformAngle(Yaw);
+	// PlayerImage->SetRenderTranslation(FVector2D(Xpix, Ypix));
 
-	/*if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
+	if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(PlayerImage->Slot))
 	{
 		CanvasSlot->SetAnchors(FAnchors(0,0,0,0));
 		CanvasSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 		CanvasSlot->SetPosition(FVector2D(Xpix, Ypix));
-	}*/
+	}
 }
 
 void UMapOnlyWidget::OnCloseMenu()
