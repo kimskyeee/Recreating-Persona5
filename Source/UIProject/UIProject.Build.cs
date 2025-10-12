@@ -17,7 +17,9 @@ public class UIProject : ModuleRules
 			"AIModule",
 			"StateTreeModule",
 			"GameplayStateTreeModule",
-			"UMG"
+			"UMG",
+			"CommonUI",
+			"GameplayTags"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
@@ -33,8 +35,7 @@ public class UIProject : ModuleRules
 		});
 
 		// Uncomment if you are using Slate UI
-		PrivateDependencyModuleNames.AddRange(new string[]
-			{ "Slate", "SlateCore", "CommonUI", "CommonInput", "GameplayTags" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
