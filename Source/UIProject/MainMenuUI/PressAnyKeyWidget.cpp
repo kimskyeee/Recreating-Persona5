@@ -31,6 +31,19 @@ FReply UPressAnyKeyWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
 }
 
+FReply UPressAnyKeyWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	const FKey Button = InMouseEvent.GetEffectingButton();
+
+	if (Button.IsValid())
+	{
+		GoMainMenu();
+		return FReply::Handled(); // 입력을 소비
+	}
+	
+	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+}
+
 void UPressAnyKeyWidget::GoMainMenu()
 {
 	UE_LOG(LogTemp, Warning, TEXT("GoMainMenu"));
