@@ -36,6 +36,10 @@ private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* ScreenMID;
 
+	UTextureRenderTarget2D* RT[2] = {nullptr, nullptr};
+	int32 ReadIndex = 0; // 전광판이 샘플링하는 RT
+	int32 WriteIndex = 1; // 캡처가 기록하는 RT
+
 	void CreateAndBindRenderTarget(int32 Width = 960, int32 Height = 540);
 	void SetupCaptureQuality();
 	void SyncFromPlayerPOV(); // 현재 ViewTarget 복사용

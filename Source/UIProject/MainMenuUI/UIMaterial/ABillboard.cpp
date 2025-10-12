@@ -35,6 +35,18 @@ void AABillboard::BeginPlay()
 	SetupCaptureQuality(); // 성능 최적화
 	SyncFromPlayerPOV(); // 초기 동기화
 
+	for (int i=0;i<2;++i){
+		RT[i] = NewObject<UTextureRenderTarget2D>(this);
+		RT[i]->RenderTargetFormat = RTF_RGBA8;
+		RT[i]->bForceLinearGamma = true;
+		RT[i]->bAutoGenerateMips = false;
+		RT[i]->InitAutoFormat(960,540);
+		RT[i]->UpdateResourceImmediate(true);
+	}
+
+	Capture->TextureTarget = RT[WriteIndex]; // 캡처는 Write
+	ScreenMID->SetTextureParameterValue(TEXT("ScreenTex"), RT[ReadIndex]); // 화면은 Read
+
 	// 자기 자신은 숨김
 	// Capture->HiddenActors.Add(this);
 
@@ -55,6 +67,10 @@ void AABillboard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SyncFromPlayerPOV();
+
+	Swap(ReadIndex, WriteIndex);
+	Capture->TextureTarget = RT[WriteIndex];
+	ScreenMID->SetTextureParameterValue(TEXT("ScreenTex"), RT[ReadIndex]);
 }
 
 void AABillboard::CreateAndBindRenderTarget(int32 Width, int32 Height)
