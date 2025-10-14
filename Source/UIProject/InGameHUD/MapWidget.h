@@ -47,8 +47,6 @@ public:
 	class UImage* MapImage;
 	UPROPERTY(meta = (BindWidget))
 	class UImage* PlayerImage;
-	/*UPROPERTY(meta = (BindWidget))
-	class UImage* FootImage;*/
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* FootImage0;
@@ -83,6 +81,11 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class APlayableBound> PlayableBound;
+
+	UPROPERTY(EditAnywhere)
+	float BackOffset = 80.f;
+	UPROPERTY(EditAnywhere)
+	float SideOffset = 50.0f; // 좌우 폭
 
 private:
 	static constexpr int32 FootPoolSize = 8;

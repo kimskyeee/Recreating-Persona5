@@ -122,18 +122,21 @@ void UMapWidget::SpawnFoot()
 {
     APawn* Pawn = GetOwningPlayerPawn();
     if (!Pawn) return;
-
-    // 이동 방향 (속도 기반이 더 자연스러움)
+	
     FVector Dir = Pawn->GetVelocity().GetSafeNormal2D();
     if (Dir.IsNearlyZero())
     {
-        Dir = Pawn->GetActorForwardVector(); // 멈췄을 때는 정면
+        Dir = Pawn->GetActorForwardVector(); // 멈췄을 때 정면
     }
 
-    // 발자국 오프셋 (월드 좌표로 뒤쪽 50 단위 예시)
-    FVector SpawnWorld = Pawn->GetActorLocation() - Dir * 50.0f;
+	FVector Right = FVector::CrossProduct(FVector::UpVector, Dir).GetSafeNormal();
+	float SideSign = (NextFootIndex % 2 == 0) ? -1.f : +1.f; // 짝수=왼, 홀수=오른
+	
+	FVector SpawnWorld = Pawn->GetActorLocation()
+					   - Dir * BackOffset
+					   + Right * SideSign * SideOffset;
 
-    // 월드 → 맵 UV 변환
+    // 월드 -> 맵 UV 변환
     const float Uw = FMath::GetRangePct(MapMin.X, MapMax.X, SpawnWorld.X);
     const float Vw = FMath::GetRangePct(MapMin.Y, MapMax.Y, SpawnWorld.Y);
 
@@ -141,7 +144,7 @@ void UMapWidget::SpawnFoot()
     const float Vr = FMath::Lerp(UVMin.Y, UVMax.Y, Vw);
 
     FFootItem& FootSlot = FootPool[NextFootIndex];
-    NextFootIndex = (NextFootIndex + 1) % FootImages.Num();
+    NextFootIndex = (NextFootIndex + 1) % FootPool.Num();
 
     if (!FootSlot.MID) return;
 
@@ -194,8 +197,5 @@ void UMapWidget::UpdateFootprints()
 		}
 		const float Alpha = FMath::Clamp(1.f - Age / S.LifeTime, 0.f, 1.f);
 		S.MID->SetScalarParameterValue(TEXT("Opacity"), Alpha);
-
-		const FFootItem& S0 = FootPool[0];
-		// UE_LOG(LogTemp, Warning, TEXT("[Tick] slot0 Active=%d Foot(%.3f,%.3f) Anchor(%.3f,%.3f)"), S0.bActive, S0.FootU, S0.FootV, S0.FootU - UOffset, S0.FootV - VOffset);
 	}
 }
