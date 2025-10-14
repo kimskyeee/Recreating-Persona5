@@ -6,7 +6,6 @@
 #include "MainMenuUI/BaseWidget.h"
 #include "MapOnlyWidget.generated.h"
 
-struct FPaintRect { float Left=0, Top=0, Width=0, Height=0; };
 /**
  * 
  */
@@ -20,6 +19,7 @@ public:
 	void OnZoomMap();
 
 	virtual void NativeOnInitialized() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual void NativeOnActivated() override;
 
 	UPROPERTY(meta=(BindWidget))
@@ -40,26 +40,26 @@ public:
 	
 private:
 	// virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
-	
+
+	UPROPERTY(meta=(BindWidget))
+	class UCanvasPanel* CanvasPanel;
 	UPROPERTY(meta = (BindWidget))
 	class UImage* PlayerImage;
 	UPROPERTY(meta = (BindWidget))
 	class UImage* MapImage;
 
-	float Zoom = 1.0f;
+	float Zoom = 0.8f;
+
+	FVector2D RedMinUV = FVector2D(0.35f, 0.34f);
+	FVector2D RedMaxUV = FVector2D(0.64f, 0.65f);
+
+	FVector2D CachedViewportSize = FVector2D::ZeroVector;
+	float CachedDpiScale = 0.f;
 	
 	// 월드맵
 	FVector2D MapMin = FVector2D::ZeroVector;
 	FVector2D MapMax = FVector2D::ZeroVector;
-
-	// 지도 텍스처에서 지도가 있는 부분 (사용할 부분)
-	FVector2D UVMin = FVector2D(0.3f, 0.4f);
-	FVector2D UVMax = FVector2D(0.68f, 0.6f);
-
-	// 지도 이미지 크기
-	FVector2D MapSize = FVector2D(1300.f, 1300.f);
-
-	FPaintRect GetBaseRect();
-	static FPaintRect ApplyUVCrop(const FPaintRect& R, const FVector2D& InUVMin, const FVector2D& InUVMax);
+	
 	void WorldToMapUV();
+	void RecalcIfViewportChanged();
 };
