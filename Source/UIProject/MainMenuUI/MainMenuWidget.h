@@ -49,4 +49,6 @@ protected:
 	void OnClickedSecondButton();
 	void OnClickedThirdButton();
 	void OnClickedFourthButton();
+
+	void ActiveButton(bool bActive);
 };

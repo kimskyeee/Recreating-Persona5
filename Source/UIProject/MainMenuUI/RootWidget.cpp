@@ -7,6 +7,8 @@
 #include "Transition/TransitionUI.h"
 #include "Widgets/CommonActivatableWidgetContainer.h" 
 
+class UGlobalInputWidget;
+
 void URootWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -57,6 +59,25 @@ void URootWidget::NativeDestruct()
 		HUDChangeHandle.Reset();
 	}
 	Super::NativeDestruct();
+}
+
+void URootWidget::OnHandleEscape()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnHandleEscape"));
+	const bool bMenuOpen =
+		IsMenuScreen(MainStack ? MainStack->GetActiveWidget() : nullptr) ||
+		IsMenuScreen(OverlayStack ? OverlayStack->GetActiveWidget() : nullptr) ||
+		IsMenuScreen(ModalStack ? ModalStack->GetActiveWidget() : nullptr);
+
+	if (bMenuOpen)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DeactivateWidget"));
+	}
+	else
+	{
+		PushByTag(TAG_UI_Screen_InGameMenu_TopMenu);
+		UE_LOG(LogTemp, Warning, TEXT("PushByTag DeactivateWidget"));
+	}
 }
 
 UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)

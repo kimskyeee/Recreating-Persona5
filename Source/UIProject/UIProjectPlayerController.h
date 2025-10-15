@@ -34,16 +34,22 @@ protected:
 	TObjectPtr<UInputMappingContext> IMC_UI;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> IMC_Combat;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> IMC_Global;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	int32 GamePriority = 0;
 	UPROPERTY(EditAnywhere, Category="Input")
 	int32 UIPriority = 10;
-	
+	UPROPERTY(EditAnywhere, Category="Input")
+	int32 GlobalPriority = 200;
+
 	virtual void SetupInputComponent() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
 	UInputAction* MapAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	UInputAction* EscapeAction;
 	
 	UFUNCTION()
 	void HandleAnyBlockingUIActive(bool bAnyBlocking);
@@ -51,15 +57,14 @@ protected:
 	void BindRootDelegates();
 	void UnbindRootDelegates();
 
-	void OnToggleMenu();
+	void OnToggleMapMenu();
+	void OnEscape();
 
 public:
 	void ApplyGameOnly();
 	// void ApplyGameAndUI();
 	void ApplyUIOnly();
 
-	void OnCloseMenu();
-	
 public:
 	void EnsureRootCreated(const FGameplayTag& InitialTag);
 	

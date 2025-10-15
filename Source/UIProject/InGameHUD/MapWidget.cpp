@@ -167,9 +167,6 @@ void UMapWidget::SpawnFoot()
     FootSlot.MID->SetScalarParameterValue("Zoom", LastZ);
     FootSlot.MID->SetScalarParameterValue("Opacity", 1.0f);
     FootSlot.MID->SetScalarParameterValue("FootYaw", FootYaw);
-
-    UE_LOG(LogTemp, Warning, TEXT("[Spawn] idx=%d Foot(%.3f,%.3f) Anchor(%.3f,%.3f)"),
-        (NextFootIndex==0?FootPool.Num()-1:NextFootIndex-1), Ur, Vr, U, V);
 }
 
 void UMapWidget::UpdateFootprints()

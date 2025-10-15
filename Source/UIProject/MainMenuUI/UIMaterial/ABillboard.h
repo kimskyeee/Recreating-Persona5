@@ -42,5 +42,5 @@ private:
 
 	void CreateAndBindRenderTarget(int32 Width = 960, int32 Height = 540);
 	void SetupCaptureQuality();
-	void SyncFromPlayerPOV(); // 현재 ViewTarget 복사용
+	void SyncFromPlayerView(); // 현재 ViewTarget 복사용
 };
