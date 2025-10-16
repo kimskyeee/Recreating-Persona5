@@ -30,6 +30,10 @@ public:
 	class UCommonButtonBase* MainMenuButton4;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	class UInputAction* IA_Quit;
+	void OnQuitGame();
+	
 	virtual void NativeOnActivated() override;
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
