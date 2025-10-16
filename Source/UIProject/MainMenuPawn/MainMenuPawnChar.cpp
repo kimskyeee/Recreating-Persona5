@@ -72,9 +72,9 @@ void AMainMenuPawnChar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (!bFalling || bLanded) return;
 
-	VerticalVelocity -= Gravity * GetWorld()->GetDeltaSeconds();
+	VerticalVelocity -= Gravity * DeltaTime;
 	FVector Loc = GetActorLocation();
-	Loc.Z += VerticalVelocity * GetWorld()->GetDeltaSeconds();
+	Loc.Z += VerticalVelocity * DeltaTime;
 
 	if (Loc.Z <= GroundZ)
 	{

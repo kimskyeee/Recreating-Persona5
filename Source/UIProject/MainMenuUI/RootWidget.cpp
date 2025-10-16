@@ -4,7 +4,10 @@
 
 #include "BaseWidget.h"
 #include "GameplayTag/UIGameplayTagInfo.h"
+#include "Transition/TransitionUI.h"
 #include "Widgets/CommonActivatableWidgetContainer.h" 
+
+class UGlobalInputWidget;
 
 void URootWidget::NativeOnInitialized()
 {
@@ -58,20 +61,48 @@ void URootWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
+void URootWidget::OnHandleEscape()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnHandleEscape"));
+	bool bMenuOpen =
+		IsMenuScreen(MainStack ? MainStack->GetActiveWidget() : nullptr) ||
+		IsMenuScreen(OverlayStack ? OverlayStack->GetActiveWidget() : nullptr) ||
+		IsMenuScreen(ModalStack ? ModalStack->GetActiveWidget() : nullptr);
+
+	if (bMenuOpen)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DeactivateWidget"));
+	}
+	else
+	{
+		PushByTag(TAG_UI_Screen_InGameMenu_TopMenu);
+		UE_LOG(LogTemp, Warning, TEXT("PushByTag ActivateWidget"));
+	}
+}
+
 UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)
 {
 	if (!ScreenTag.IsValid()) return nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("URootWidget::PushByTag"));
+	UE_LOG(LogTemp, Warning, TEXT("ScreenTag: %s"), *ScreenTag.ToString());
 
 	// 태그로 클래스 찾기
 	TSubclassOf<UBaseWidget> ScreenClass = ScreenMap.FindRef(ScreenTag);
 	if (!ScreenClass) return nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("ScreenClass is not NULL"));
 
 	UBaseWidget* Base = ScreenClass.GetDefaultObject();
 	FGameplayTag Layer = Base ? Base->GetLayerTag() : TAG_UI_Layer_Overlay;
 	UCommonActivatableWidgetStack* Target = ChooseStackByLayer(Layer);
 
+	// 현재 활성화된 위젯이 같은 클래스면 그냥 반환
+	if (UCommonActivatableWidget* Current = Target->GetActiveWidget())
+	{
+		if (Current->GetClass() == ScreenClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Current ScreenTag: %s"), *ScreenTag.ToString());
+			return nullptr;
+		}
+	}
+	
 	// 스택에 추가후 포인터 반환
 	return Target ? Target->AddWidget(*ScreenClass) : nullptr;
 }
@@ -133,11 +164,12 @@ void URootWidget::RecalcAndBroadcast()
 bool URootWidget::IsMenuScreen(const UCommonActivatableWidget* Widget) const
 {
 	if (!Widget) return false;
-	if (const UBaseWidget* Screen = Cast<UBaseWidget>(Widget))
-	{
-		return Screen->GetScreenTag() == TAG_UI_Screen_InGameMenu;
-	}
-	return false;
+	const UBaseWidget* Screen = Cast<UBaseWidget>(Widget);
+	if (!Screen) return false;
+
+	const FGameplayTag& Tag = Screen->GetScreenTag();
+	// 부모-자식 계층 고려
+	return Tag.IsValid() && Tag.MatchesTag(TAG_UI_Screen_InGameMenu);
 }
 
 void URootWidget::UpdateMenuVisibilityAndBroadcast()
@@ -154,4 +186,17 @@ void URootWidget::UpdateMenuVisibilityAndBroadcast()
 		OnHudMenuAnim.Broadcast(bNowVisible);
 		bMenuVisiblePrev = bNowVisible;
 	}
+}
+
+class UTransitionUI* URootWidget::PushTransitionByTag(FGameplayTag Tag, const FName TargetMap)
+{
+	if (UCommonActivatableWidget* Added = PushByTag(Tag))
+	{
+		if (UTransitionUI* Transition = Cast<UTransitionUI>(Added))
+		{
+			Transition->TargetMapName = TargetMap;
+			return Transition;
+		}
+	}
+	return nullptr;
 }

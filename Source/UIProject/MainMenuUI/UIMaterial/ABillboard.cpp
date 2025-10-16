@@ -33,7 +33,7 @@ void AABillboard::BeginPlay()
 
 	CreateAndBindRenderTarget(); // 960x540 기본 생성
 	SetupCaptureQuality(); // 성능 최적화
-	SyncFromPlayerPOV(); // 초기 동기화
+	SyncFromPlayerView(); // 초기 동기화
 
 	for (int i=0;i<2;++i){
 		RT[i] = NewObject<UTextureRenderTarget2D>(this);
@@ -66,7 +66,7 @@ void AABillboard::BeginPlay()
 void AABillboard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SyncFromPlayerPOV();
+	SyncFromPlayerView();
 
 	Swap(ReadIndex, WriteIndex);
 	Capture->TextureTarget = RT[WriteIndex];
@@ -116,16 +116,16 @@ void AABillboard::SetupCaptureQuality()
 	// Capture->MaxViewDistanceOverride = 20000.0f;
 }
 
-void AABillboard::SyncFromPlayerPOV()
+void AABillboard::SyncFromPlayerView()
 {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (!PC) return;
 
-	const FMinimalViewInfo& POV = PC->PlayerCameraManager->GetCameraCachePOV();
-	Capture->SetWorldLocationAndRotation(POV.Location, POV.Rotation);
-	Capture->FOVAngle = POV.FOV;
+	const FMinimalViewInfo& View = PC->PlayerCameraManager->GetCameraCacheView();
+	Capture->SetWorldLocationAndRotation(View.Location, View.Rotation);
+	Capture->FOVAngle = View.FOV;
 
 	// 후처리 일치
-	Capture->PostProcessSettings = POV.PostProcessSettings;
+	Capture->PostProcessSettings = View.PostProcessSettings;
 	Capture->PostProcessBlendWeight = 1.0f;
 }

@@ -61,13 +61,13 @@ void AUIProjectPlayerController::SetupInputComponent()
 	{
 		Subsystem->ClearAllMappings();
 		if (!IMC_UI) { UE_LOG(LogTemp, Error, TEXT("IMC_UI is NULL")); }
-		if (IMC_UI)
+	
+		Subsystem->AddMappingContext(IMC_UI, UIPriority);
+		Subsystem->AddMappingContext(IMC_Global, GlobalPriority);
+		if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
 		{
-			Subsystem->AddMappingContext(IMC_UI, UIPriority);
-			if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
-			{
-				EIC->BindAction(MapAction, ETriggerEvent::Started, this, &AUIProjectPlayerController::OnToggleMenu);
-			}
+			EIC->BindAction(MapAction, ETriggerEvent::Started, this, &AUIProjectPlayerController::OnToggleMapMenu);
+			EIC->BindAction(EscapeAction, ETriggerEvent::Started, this, &AUIProjectPlayerController::OnEscape);
 		}
 	}
 }
@@ -86,6 +86,10 @@ void AUIProjectPlayerController::ApplyGameOnly()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			Subsys->ClearAllMappings();
+			if (IMC_Global)
+			{
+				Subsys->AddMappingContext(IMC_Global, GlobalPriority);
+			}
 			if (IMC_Game) 
 			{ 
 				Subsys->AddMappingContext(IMC_Game, GamePriority); 
@@ -129,7 +133,10 @@ void AUIProjectPlayerController::ApplyUIOnly()
 			if (IMC_UI)
 			{
 				Subsys->AddMappingContext(IMC_UI, UIPriority);
-				UE_LOG(LogTemp, Warning, TEXT("IMC_UI is not NULL"));
+			}
+			if (IMC_Global)
+			{
+				Subsys->AddMappingContext(IMC_Global, GlobalPriority);
 			}
 			FInputModeUIOnly Mode;
 			Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -173,12 +180,18 @@ void AUIProjectPlayerController::UnbindRootDelegates()
 	RootWidget->OnUIStateChanged.RemoveDynamic(this, &AUIProjectPlayerController::HandleAnyBlockingUIActive);
 }
 
-void AUIProjectPlayerController::OnToggleMenu()
+void AUIProjectPlayerController::OnToggleMapMenu()
 {
 	if (RootWidget)
 	{
-		RootWidget->PushByTag(TAG_UI_Screen_InGameMenu);
+		RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Map);
 	}
+}
+
+void AUIProjectPlayerController::OnEscape()
+{
+	RootWidget->OnHandleEscape();
+	UE_LOG(LogTemp, Warning, TEXT("AUIProjectPlayerController OnEscape"));
 }
 
 void AUIProjectPlayerController::SwitchCameraWithShake(AActor* NewCamera, float BlendTime)

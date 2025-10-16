@@ -7,9 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "RootWidget.generated.h"
 
-class UBaseWidget;
-class UCommonActivatableWidget;
-
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHudMenuAnim, bool);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUIStateChanged, bool, bAnyBlockingActive);
 
@@ -24,12 +21,14 @@ public:
 
 	// 태그로 푸시
 	UFUNCTION(BlueprintCallable, Category="Stack")
-	UCommonActivatableWidget* PushByTag(const FGameplayTag ScreenTag);
+	class UCommonActivatableWidget* PushByTag(const FGameplayTag ScreenTag);
 
+	void OnHandleEscape();
+	
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeDestruct() override;
-	
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCommonActivatableWidgetStack> MainStack;
@@ -41,7 +40,7 @@ private:
 	TObjectPtr<UCommonActivatableWidgetStack> HUDStack; // 인게임에 계속 떠있는 UI
 	
 	UPROPERTY(EditDefaultsOnly, Category="Screens")
-	TMap<FGameplayTag, TSubclassOf<UBaseWidget>> ScreenMap;
+	TMap<FGameplayTag, TSubclassOf<class UBaseWidget>> ScreenMap;
 	
 	// 스택 상태 추적
 	FDelegateHandle MainChangedHandle;
@@ -74,4 +73,8 @@ private:
 
 	bool IsMenuScreen(const UCommonActivatableWidget* Widget) const;
 	void UpdateMenuVisibilityAndBroadcast();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	class UTransitionUI* PushTransitionByTag(FGameplayTag Tag, const FName TargetMap);
 };

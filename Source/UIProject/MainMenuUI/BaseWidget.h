@@ -15,7 +15,7 @@ UCLASS()
 class UIPROJECT_API UBaseWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
-public:
+public:	
 	UFUNCTION(BlueprintCallable)
 	const FGameplayTag& GetScreenTag() const { return ScreenTag; }
 	UFUNCTION(BlueprintCallable)
@@ -27,10 +27,17 @@ public:
 	void SetBlocking(bool bBlock) { bBlockGameInput = bBlock; }
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	class UInputAction* IA_Escape;
+	
+	virtual void NativeOnInitialized() override;
 	virtual void NativeOnActivated() override;
+
+	void OnToggleMenu();
 	
 	UPROPERTY()
-	TObjectPtr<class URootWidget> RootWidget;
+	TObjectPtr<class URootWidget> RootWidget = nullptr;
+	
 	bool bBlockGameInput = true; // true일때 UI IMC
 	
 private:

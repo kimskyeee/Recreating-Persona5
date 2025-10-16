@@ -3,7 +3,9 @@
 
 #include "MainMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "RootWidget.h"
 #include "UIProjectPlayerController.h"
+#include "GameplayTag/UIGameplayTagInfo.h"
 #include "UICam/MenuConfigCam.h"
 #include "UICam/MenuLoadGameCam.h"
 #include "UICam/MenuNewGameCam.h"
@@ -40,7 +42,8 @@ void UMainMenuWidget::NativeOnInitialized()
 void UMainMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
-
+	
+	ActiveButton(true);
 	PC = Cast<AUIProjectPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
@@ -106,6 +109,12 @@ void UMainMenuWidget::OnHoveredFourthButton()
 void UMainMenuWidget::OnClickedFirstButton()
 {
 	RequestCam(EMenuCam::First);
+	
+	if (!PC) return;
+
+	ActiveButton(false);
+	// PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_Transition); // 따로 맵이름 설정하지 않아도 되긴함
+	PC->RootWidget->PushTransitionByTag(TAG_UI_Screen_InGameMenu_Transition, TEXT("Downtown_Alley"));
 }
 
 void UMainMenuWidget::OnClickedSecondButton()
@@ -121,4 +130,12 @@ void UMainMenuWidget::OnClickedThirdButton()
 void UMainMenuWidget::OnClickedFourthButton()
 {
 	RequestCam(EMenuCam::Fourth);
+}
+
+void UMainMenuWidget::ActiveButton(bool bActive)
+{
+	MainMenuButton1->SetIsEnabled(bActive);
+	MainMenuButton2->SetIsEnabled(bActive);
+	MainMenuButton3->SetIsEnabled(bActive);
+	MainMenuButton4->SetIsEnabled(bActive);
 }
