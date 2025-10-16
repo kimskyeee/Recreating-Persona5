@@ -11,6 +11,7 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Screen_InGameMenu_Map, "UI.Screen.InGameMenu.Map")
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Screen_InGameMenu_Transition, "UI.Screen.InGameMenu.Transition");
 UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Screen_InGameMenu_TopMenu, "UI.Screen.InGameMenu.TopMenu");
+UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Screen_InGameMenu_QuitGame, "UI.Screen.InGameMenu.QuitGame");
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Layer_Main, "UI.Layer.Main");
 UE_DEFINE_GAMEPLAY_TAG(TAG_UI_Layer_Overlay, "UI.Layer.Overlay");

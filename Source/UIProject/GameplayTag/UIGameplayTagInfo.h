@@ -14,6 +14,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_Screen_InGameMenu_Map); // 지도열기
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_Screen_InGameMenu_Transition); // 맵 바꾸기
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_Screen_InGameMenu_TopMenu); // 지도열기 (Modal로 두기)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_Screen_InGameMenu_QuitGame); // Quit
 
 // Layers
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_UI_Layer_Main);

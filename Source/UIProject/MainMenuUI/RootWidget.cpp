@@ -64,7 +64,7 @@ void URootWidget::NativeDestruct()
 void URootWidget::OnHandleEscape()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHandleEscape"));
-	const bool bMenuOpen =
+	bool bMenuOpen =
 		IsMenuScreen(MainStack ? MainStack->GetActiveWidget() : nullptr) ||
 		IsMenuScreen(OverlayStack ? OverlayStack->GetActiveWidget() : nullptr) ||
 		IsMenuScreen(ModalStack ? ModalStack->GetActiveWidget() : nullptr);
@@ -76,24 +76,33 @@ void URootWidget::OnHandleEscape()
 	else
 	{
 		PushByTag(TAG_UI_Screen_InGameMenu_TopMenu);
-		UE_LOG(LogTemp, Warning, TEXT("PushByTag DeactivateWidget"));
+		UE_LOG(LogTemp, Warning, TEXT("PushByTag ActivateWidget"));
 	}
 }
 
 UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)
 {
 	if (!ScreenTag.IsValid()) return nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("URootWidget::PushByTag"));
+	UE_LOG(LogTemp, Warning, TEXT("ScreenTag: %s"), *ScreenTag.ToString());
 
 	// 태그로 클래스 찾기
 	TSubclassOf<UBaseWidget> ScreenClass = ScreenMap.FindRef(ScreenTag);
 	if (!ScreenClass) return nullptr;
-	UE_LOG(LogTemp, Warning, TEXT("ScreenClass is not NULL"));
 
 	UBaseWidget* Base = ScreenClass.GetDefaultObject();
 	FGameplayTag Layer = Base ? Base->GetLayerTag() : TAG_UI_Layer_Overlay;
 	UCommonActivatableWidgetStack* Target = ChooseStackByLayer(Layer);
 
+	// 현재 활성화된 위젯이 같은 클래스면 그냥 반환
+	if (UCommonActivatableWidget* Current = Target->GetActiveWidget())
+	{
+		if (Current->GetClass() == ScreenClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Current ScreenTag: %s"), *ScreenTag.ToString());
+			return nullptr;
+		}
+	}
+	
 	// 스택에 추가후 포인터 반환
 	return Target ? Target->AddWidget(*ScreenClass) : nullptr;
 }

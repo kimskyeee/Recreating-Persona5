@@ -3,7 +3,10 @@
 
 #include "TopMenuWidget.h"
 #include "CommonButtonBase.h"
+#include "UIProjectPlayerController.h"
+#include "GameplayTag/UIGameplayTagInfo.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainMenuUI/RootWidget.h"
 
 void UTopMenuWidget::NativeOnInitialized()
 {
@@ -14,24 +17,36 @@ void UTopMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 
+	PlayAnimation(ShakeAnim);
+	
 	if (SystemButton)
 	{
 		SystemButton->OnClicked().AddUObject(this, &UTopMenuWidget::OnClickSystemButton);
 	}
 
 	FindPostProcessVolume();
-	SetWeightBlend(1);
+	SetWeightBlend(1); //흑백
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void UTopMenuWidget::NativeOnDeactivated()
 {
+	if (SystemButton)
+	{
+		SystemButton->OnClicked().RemoveAll(this);
+	}
 	SetWeightBlend(0);
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	Super::NativeOnDeactivated();
 }
 
 void UTopMenuWidget::OnClickSystemButton()
 {
-	
+	AUIProjectPlayerController* PC = Cast<AUIProjectPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (!PC) return;
+
+	// UI 스택에 push
+	PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_QuitGame);
 }
 
 void UTopMenuWidget::FindPostProcessVolume()
