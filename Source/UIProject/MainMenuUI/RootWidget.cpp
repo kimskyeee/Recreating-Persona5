@@ -139,7 +139,6 @@ void URootWidget::HandleHUDChanged(class UCommonActivatableWidget* NewTop)
 
 UCommonActivatableWidgetStack* URootWidget::ChooseStackByLayer(const FGameplayTag& LayerTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ChooseStackByLayer"));
 	if (LayerTag == TAG_UI_Layer_Main) return MainStack;
 	if (LayerTag == TAG_UI_Layer_Overlay) return OverlayStack;
 	if (LayerTag == TAG_UI_Layer_Modal) return ModalStack;

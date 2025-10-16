@@ -11,6 +11,7 @@
 #include "UICam/MenuNewGameCam.h"
 #include "UICam/MenuQcam.h"
 #include "UICam/PressScreenCam.h"
+#include "Input/CommonUIInputTypes.h"
 
 void UMainMenuWidget::NativeOnInitialized()
 {
@@ -39,9 +40,21 @@ void UMainMenuWidget::NativeOnInitialized()
 	}
 }
 
+void UMainMenuWidget::OnQuitGame()
+{
+	PC->RootWidget->PushByTag(TAG_UI_Screen_InGameMenu_QuitGame);
+}
+
 void UMainMenuWidget::NativeOnActivated()
 {
 	Super::NativeOnActivated();
+
+	if (IA_Quit)
+	{
+		RegisterUIActionBinding(FBindUIActionArgs(
+			IA_Quit, false,
+			FSimpleDelegate::CreateUObject(this, &UMainMenuWidget::OnQuitGame)));
+	}
 	
 	ActiveButton(true);
 	PC = Cast<AUIProjectPlayerController>(GetWorld()->GetFirstPlayerController());
