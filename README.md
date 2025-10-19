@@ -39,7 +39,9 @@ UI 스택 구조, 입력 매핑, 애니메이션 처리 등 UI 시스템을 직�
 - 태그는 레이어(스택)·스크린(화면표시)을 명확히 분리했습니다.<br>
 
 <img width="1519" height="1233" alt="image" src="https://github.com/user-attachments/assets/6c27fed3-6b44-4e1c-b6aa-91ec086ef8b2" />
+<br>
 
+---
 ## <mark> 1. 게임 로비 화면 구성 </mark>
 ### <mark> Anim Notify를 활용한 착지 연출 </mark>
 > [MainMenuPawn 소스코드](https://github.com/kimskyeee/Recreating-Persona5/blob/master/Source/UIProject/MainMenuPawn/MainMenuPawnChar.cpp#L96C1-L142C2)
