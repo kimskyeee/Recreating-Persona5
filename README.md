@@ -34,10 +34,9 @@ UI 스택 구조, 입력 매핑, 애니메이션 처리 등 UI 시스템을 직�
 > [GameplayTag 선언 소스코드](https://github.com/kimskyeee/Recreating-Persona5/blob/master/Source/UIProject/GameplayTag/UIGameplayTagInfo.h)<br>
 > [RootWidget::PushByTag 소스코드](https://github.com/kimskyeee/Recreating-Persona5/blob/master/Source/UIProject/MainMenuUI/RootWidget.cpp#L83C1-L108C2)
 
-Common UI는 `RootWidget` → 4개 스택(Main/Overlay/Modal/HUD) 구조로 설계했으며,<br>
-GameplayTag 기반으로 Push/Pop 하며 화면을 관리합니다.<br>
-모든 UI의 기본 베이스인 `UBaseWidget`에 ESC 등 글로벌 입력을 상주시켜 전역 ESC 입력을 처리했습니다. <br>
-태그는 레이어(스택)·스크린(화면표시)을 명확히 분리했습니다.<br>
+- Common UI는 `RootWidget` → 4개 스택(Main/Overlay/Modal/HUD) 구조로 설계했으며, GameplayTag 기반으로 Push/Pop 하며 화면을 관리합니다.<br>
+- 모든 UI의 기본 베이스인 `UBaseWidget`에 ESC 등 글로벌 입력을 상주시켜 전역 ESC 입력을 처리했습니다. <br>
+- 태그는 레이어(스택)·스크린(화면표시)을 명확히 분리했습니다.<br>
 
 <img width="1519" height="1233" alt="image" src="https://github.com/user-attachments/assets/6c27fed3-6b44-4e1c-b6aa-91ec086ef8b2" />
 
