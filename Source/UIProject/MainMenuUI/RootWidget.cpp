@@ -98,11 +98,9 @@ UCommonActivatableWidget* URootWidget::PushByTag(const FGameplayTag ScreenTag)
 	{
 		if (Current->GetClass() == ScreenClass)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Current ScreenTag: %s"), *ScreenTag.ToString());
 			return nullptr;
 		}
 	}
-	
 	// 스택에 추가후 포인터 반환
 	return Target ? Target->AddWidget(*ScreenClass) : nullptr;
 }

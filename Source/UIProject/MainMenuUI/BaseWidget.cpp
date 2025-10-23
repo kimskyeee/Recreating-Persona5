@@ -13,7 +13,6 @@ void UBaseWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	// C = 취소
 	if (IA_Escape)
 	{
 		RegisterUIActionBinding(FBindUIActionArgs(

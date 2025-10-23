@@ -12,6 +12,8 @@
 #include "UICam/MenuQcam.h"
 #include "UICam/PressScreenCam.h"
 #include "Input/CommonUIInputTypes.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Framework/Application/NavigationConfig.h"
 
 void UMainMenuWidget::NativeOnInitialized()
 {
@@ -38,6 +40,12 @@ void UMainMenuWidget::NativeOnInitialized()
 		MainMenuButton4->OnHovered().AddUObject(this, &UMainMenuWidget::OnHoveredFourthButton);
 		MainMenuButton4->OnClicked().AddUObject(this, &UMainMenuWidget::OnClickedFourthButton);
 	}
+
+	// 포커스 이동 키 설정
+	TMap<FKey, EUINavigation>& KeysForFocus = FSlateApplication::Get().GetNavigationConfig()->KeyEventRules;
+
+	KeysForFocus.Emplace(EKeys::D, EUINavigation::Next);
+	KeysForFocus.Emplace(EKeys::A, EUINavigation::Previous);
 }
 
 void UMainMenuWidget::OnQuitGame()
